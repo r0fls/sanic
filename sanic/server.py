@@ -190,7 +190,11 @@ class HttpProtocol(asyncio.Protocol):
 
     def bail_out(self, message):
         exception = ServerError(message)
-        self.write_error(exception)
+        try:
+            self.write_error(exception)
+        except Exception as e:
+            log.error("While handling the exception '{0}' "
+                      "another exception occured: {1}".format(message, e))
         log.error(message)
 
     def cleanup(self):

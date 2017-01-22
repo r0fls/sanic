@@ -276,7 +276,7 @@ class Sanic:
     def run(self, host="127.0.0.1", port=8000, debug=False, before_start=None,
             after_start=None, before_stop=None, after_stop=None, ssl=None,
             sock=None, workers=1, loop=None, protocol=HttpProtocol,
-            backlog=100, stop_event=None):
+            backlog=100, stop_event=None, other_servers=None):
 
         """
         Runs the HTTP Server and listens until keyboard interrupt or term
@@ -304,6 +304,17 @@ class Sanic:
         self.error_handler.debug = True
         self.debug = debug
         self.loop = loop
+        _before_start = None
+        if other_servers is not None:
+            old_before = before_start
+            if not isinstance(other_servers, list):
+                other_servers = [other_servers]
+
+            def _before_start(app, loop):
+                if old_before is not None:
+                    old_before(app, loop)
+                for server in other_servers:
+                    get_event_loop().run_until_complete(server)
 
         server_settings = {
             'protocol': protocol,
@@ -323,6 +334,9 @@ class Sanic:
         # -------------------------------------------- #
         # Register start/stop events
         # -------------------------------------------- #
+
+        if _before_start is not None:
+            before_start = _before_start
 
         for event_name, settings_name, args, reverse in (
                 ("before_server_start", "before_start", before_start, False),

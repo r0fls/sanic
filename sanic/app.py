@@ -489,7 +489,6 @@ class Sanic:
         proto = "http"
         if ssl is not None:
             proto = "https"
-        log.info('Goin\' Fast @ {}://{}:{}'.format(proto, host, port))
 
         return await serve(**server_settings)
 

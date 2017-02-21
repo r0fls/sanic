@@ -22,7 +22,8 @@ def HTTP2Protocol(ssl, parent_class):
     ssl.set_alpn_protocols(["h2", "http/1.1"])
 
     _HTTP2Protocol = type("HTTP2Protocol", (HTTP2Checker, parent_class), {})
-    _HTTP2Protocol.protocol_class = type("H2Protocol", (H2Protocol, parent_class), {})
+    _HTTP2Protocol.protocol_class = type("H2Protocol",
+                                         (H2Protocol, parent_class), {})
 
     return _HTTP2Protocol
 

@@ -1,4 +1,4 @@
-from sanic.defaultFilter import DefaultFilter
+from sanic.log import DefaultFilter
 import os
 import sys
 import syslog

@@ -57,10 +57,20 @@ def test_route_optional_slash():
     def handler(request):
         return text('OK')
 
+    @app.get('/post')
+    def handler(request):
+        return text('OK')
+
     request, response = app.test_client.get('/get')
     assert response.text == 'OK'
 
     request, response = app.test_client.get('/get/')
+    assert response.text == 'OK'
+
+    request, response = app.test_client.get('/post')
+    assert response.text == 'OK'
+
+    request, response = app.test_client.get('/post/')
     assert response.text == 'OK'
 
 def test_shorthand_routes_post():

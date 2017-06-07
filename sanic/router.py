@@ -107,13 +107,16 @@ class Router:
             return
 
         # Add versions with and without trailing /
+        if methods is None:
+            methods = []
+
         slash_is_missing = (
             not uri[-1] == '/'
-            and not self.routes_all.get(uri + '/', False)
+            and not all(map(lambda x: x in self.routes_all.get(uri + '/', frozenset({})), methods))
         )
         without_slash_is_missing = (
             uri[-1] == '/'
-            and not self.routes_all.get(uri[:-1], False)
+            and not all((lambda x: x in self.routes_all.get(uri[:-1] + '/', frozenset({})), methods))
             and not uri == '/'
         )
         # add version with trailing slash
